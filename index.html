@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Sharing</title>
+</head>
+
+<body>
+
+    <h1>📍 My Location</h1>
+
+    <button id="locationButton">Share My Location</button>
+
+    <p id="status">Waiting...</p>
+
+    <script>
+        document.getElementById("locationButton").onclick = function() {
+
+            if (!navigator.geolocation) {
+                document.getElementById("status").textContent =
+                    "GPS is not supported.";
+                return;
+            }
+
+            document.getElementById("status").textContent =
+                "Getting your location...";
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    document.getElementById("status").innerHTML =
+                        "Latitude: " + lat +
+                        "<br>Longitude: " + lon +
+                        "<br><br>" +
+                        '<a href="https://www.google.com/maps?q=' +
+                        lat + ',' + lon +
+                        '" target="_blank">Open in Google Maps</a>';
+                },
+
+                function() {
+                    document.getElementById("status").textContent =
+                        "Location permission was denied.";
+                }
+            );
+        };
+    </script>
+
+</body>
+</html>
