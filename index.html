@@ -1,52 +1,288 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gwapa/gwapo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>gwapa/gwapo</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, #1e3a5f 0%, #0f172a 45%, #020617 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .icon {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 14px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    }
+
+    h1 {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .card {
+      background: rgba(15,23,42,0.78);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      backdrop-filter: blur(14px);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 15px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      margin-bottom: 18px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #22c55e;
+    }
+
+    .location-box {
+      text-align: center;
+      padding: 18px 10px;
+      margin-bottom: 18px;
+    }
+
+    .location-label {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .coordinates {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    button,
+    .map-button {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      margin-top: 12px;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:active,
+    .map-button:active {
+      transform: scale(0.97);
+    }
+
+    .share-button {
+      background: white;
+      color: #0f172a;
+    }
+
+    .map-button {
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 12px;
+      margin-top: 18px;
+    }
+
+    #message {
+      text-align: center;
+      color: #fbbf24;
+      font-size: 13px;
+      margin-top: 12px;
+      min-height: 18px;
+    }
+  </style>
 </head>
 
 <body>
 
-    <h1>gps</h1>
+  <main class="container">
 
-    <button id="locationButton">tap</button>
+    <header class="header">
+      <div class="icon">📍</div>
+      <h1>Tracker</h1>
+      <p class="subtitle">Simple location sharing</p>
+    </header>
 
-    <p id="status">Waiting...</p>
+    <section class="card">
 
-    <script>
-        document.getElementById("locationButton").onclick = function() {
+      <div class="status">
+        <span class="dot"></span>
+        <span id="status">Getting your location...</span>
+      </div>
 
-            if (!navigator.geolocation) {
-                document.getElementById("status").textContent =
-                    "GPS is not supported.";
-                return;
-            }
+      <div class="location-box">
+        <div class="location-label">CURRENT LOCATION</div>
+        <div class="coordinates" id="coordinates">
+          Waiting for GPS...
+        </div>
+      </div>
 
-            document.getElementById("status").textContent =
-                "Getting your location...";
+      <button class="share-button" onclick="shareLocation()">
+        📤 Share My Location
+      </button>
 
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
+      <a
+        id="mapLink"
+        class="map-button"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        🗺️ Open in Google Maps
+      </a>
 
-                    var lat = position.coords.latitude;
-                    var lon = position.coords.longitude;
+      <div id="message"></div>
 
-                    document.getElementById("status").innerHTML =
-                        "Latitude: " + lat +
-                        "<br>Longitude: " + lon +
-                        "<br><br>" +
-                        '<a href="https://www.google.com/maps?q=' +
-                        lat + ',' + lon +
-                        '" target="_blank">Open in Google Maps</a>';
-                },
+    </section>
 
-                function() {
-                    document.getElementById("status").textContent =
-                        "Location permission was denied.";
-                }
-            );
-        };
-    </script>
+    <div class="footer">
+      Your location is only shared when you choose to share it.
+    </div>
+
+  </main>
+
+  <script>
+    let currentLocation = null;
+
+    const statusText = document.getElementById("status");
+    const coordinates = document.getElementById("coordinates");
+    const mapLink = document.getElementById("mapLink");
+    const message = document.getElementById("message");
+
+    function getLocation() {
+      if (!navigator.geolocation) {
+        statusText.textContent = "GPS is not supported";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          currentLocation = {
+            latitude: lat,
+            longitude: lon
+          };
+
+          coordinates.textContent =
+            lat.toFixed(6) + ", " + lon.toFixed(6);
+
+          statusText.textContent = "Location detected";
+
+          mapLink.href =
+            "https://www.google.com/maps?q=" + lat + "," + lon;
+        },
+        function(error) {
+          statusText.textContent = "Unable to get location";
+          coordinates.textContent = "Please allow location access.";
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    async function shareLocation() {
+      if (!currentLocation) {
+        message.textContent = "Waiting for your location...";
+        getLocation();
+        return;
+      }
+
+      const url =
+        "https://www.google.com/maps?q=" +
+        currentLocation.latitude +
+        "," +
+        currentLocation.longitude;
+
+      const shareData = {
+        title: "My Location",
+        text: "Here is my current location:",
+        url: url
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(url);
+          message.textContent = "Location link copied!";
+        }
+      } catch (error) {
+        console.log("Share cancelled");
+      }
+    }
+
+    getLocation();
+  </script>
 
 </body>
 </html>
